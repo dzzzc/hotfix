@@ -16,8 +16,8 @@ func TestFixFooHelloFunc(t *testing.T) {
 		String: "foo1",
 	}
 
-	// 打印foo1的信息
-	fmt.Println("初始: ", foo1, "-> Hello() ->", foo1.Hello())
+	// 初始执行Hello(),并打印结果
+	fmt.Printf("[Init]  foo1:{%p}, Hello():{%v}\n", foo1, foo1.Hello())
 
 	// 模拟Hello()被调用
 	for i := 0; i < 1000; i++ {
@@ -30,23 +30,23 @@ func TestFixFooHelloFunc(t *testing.T) {
 	}
 
 	var (
-		filePath = "./_patch_files/foo/foo.go"
-		evalText = "foo.GetPatch()"
+		filePath = "./_patch_files/foo.go.patch" // 补丁脚本的路径
+		evalText = "foo.GetPatch()"              // 补丁脚本内执行的函数名
 	)
 
-	// 修复Hello()函数
+	// 加载补丁函数foo.GetPatch()
 	patches, err := hotfix.ApplyFunc(filePath, evalText, symbols.Symbols)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	// 打印foo1的信息，Hello()函数已被替换!
-	fmt.Println("替换: ", foo1, "-> Hello() ->", foo1.Hello())
+	// 打印已被替换的foo1.Hello()
+	fmt.Printf("[Patch] foo1:{%p}, Hello():{%v}\n", foo1, foo1.Hello())
 
-	// 重置Hello()函数
+	// 执行重置
 	patches.Reset()
 
-	// 打印foo1的信息，已还原
-	fmt.Println("还原: ", foo1, "-> Hello() ->", foo1.Hello())
+	// 打印函数
+	fmt.Printf("[Reset] foo1:{%p}, Hello():{%v}\n", foo1, foo1.Hello())
 }

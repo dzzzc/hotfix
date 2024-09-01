@@ -2,17 +2,18 @@ package foo
 
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/cherry-game/cherry-hotfix/hotfix"
 	"github.com/cherry-game/cherry-hotfix/test/model"
-	"reflect"
 )
 
 func GetPatch() *hotfix.FuncPatch {
-	fmt.Println("invoke GetPatch()")
+	fmt.Println("[Patch] invoke GetPatch()")
 
 	fn := func(foo *model.Foo) string {
 		foo.M1Int.Int = 1
-		return "func is fixed"
+		return "Hello() func is fixed"
 	}
 
 	return &hotfix.FuncPatch{
