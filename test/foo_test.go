@@ -50,3 +50,31 @@ func TestFixFooHelloFunc(t *testing.T) {
 	// 打印函数
 	fmt.Printf("[Reset] foo1:{%p}, Hello():{%v}\n", foo1, foo1.Hello())
 }
+
+func BenchmarkHotfix(b *testing.B) {
+	foo := &model.Foo{
+		String: "foo",
+	}
+	var (
+		filePath = "./_patch_files/foo.go.patch" // 补丁脚本的路径
+		evalText = "foo.GetPatch()"              // 补丁脚本内执行的函数名
+	)
+
+	// 加载补丁函数foo.GetPatch()
+	_, err := hotfix.ApplyFunc(filePath, evalText, symbols.Symbols)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	b.Run("github.com/cherry-game/cherry-hotfix", func(b *testing.B) {
+
+		b.StartTimer()
+		for i := 0; i < b.N; i++ {
+			foo.Hello()
+		}
+
+		b.StopTimer()
+	})
+
+}
