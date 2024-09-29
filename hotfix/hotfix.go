@@ -35,6 +35,8 @@ func ApplyFunc(filePath string, evalText string, symbols interp.Exports) (*gomon
 }
 
 func loadFuncPatch(filePath string, evalText string, symbols interp.Exports) (*FuncPatch, error) {
+	//需要将旧的解析器置为nil
+	interpreter = nil
 	// 给interpreter赋值新的解析器,旧的解析器会被回收
 	interpreter = interp.New(interp.Options{})
 	interpreter.Use(symbols)
